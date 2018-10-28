@@ -6,8 +6,7 @@ from trytond.pyson import Eval
 __all__ = ['ShipmentIn', 'ShipmentOut']
 
 
-class ShipmentIn:
-    __metaclass__ = PoolMeta
+class ShipmentIn(metaclass=PoolMeta):
     __name__ = 'stock.shipment.in'
 
     @classmethod
@@ -17,8 +16,7 @@ class ShipmentIn:
         cancel['invisible'] |= Eval('state') == 'received'
 
 
-class ShipmentOut:
-    __metaclass__ = PoolMeta
+class ShipmentOut(metaclass=PoolMeta):
     __name__ = 'stock.shipment.out'
 
     @classmethod
