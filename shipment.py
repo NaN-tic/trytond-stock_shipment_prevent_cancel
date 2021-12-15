@@ -23,4 +23,5 @@ class ShipmentOut(metaclass=PoolMeta):
     def __setup__(cls):
         super(ShipmentOut, cls).__setup__()
         cancel = cls._buttons['cancel']
-        cancel['invisible'] |= Eval('state').in_(['assigned', 'packed'])
+        cancel['invisible'] |= Eval('state').in_(['assigned', 'picked',
+                'packed'])
