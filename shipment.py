@@ -3,17 +3,16 @@
 from trytond.pool import PoolMeta
 from trytond.pyson import Eval
 
-__all__ = ['ShipmentIn', 'ShipmentOut']
-
 
 class ShipmentIn(metaclass=PoolMeta):
     __name__ = 'stock.shipment.in'
 
     @classmethod
     def __setup__(cls):
-        super(ShipmentIn, cls).__setup__()
+        super().__setup__()
         cancel = cls._buttons['cancel']
         cancel['invisible'] |= Eval('state') == 'received'
+        cls._transitions.discard(('received', 'cancelled'))
 
 
 class ShipmentOut(metaclass=PoolMeta):
@@ -21,7 +20,10 @@ class ShipmentOut(metaclass=PoolMeta):
 
     @classmethod
     def __setup__(cls):
-        super(ShipmentOut, cls).__setup__()
+        super().__setup__()
         cancel = cls._buttons['cancel']
         cancel['invisible'] |= Eval('state').in_(['assigned', 'picked',
                 'packed'])
+        cls._transitions.discard(('picked', 'cancelled'))
+        cls._transitions.discard(('packed', 'cancelled'))
+        cls._transitions.discard(('assigned', 'cancelled'))
