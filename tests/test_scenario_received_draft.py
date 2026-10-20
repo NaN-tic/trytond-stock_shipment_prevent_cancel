@@ -4,6 +4,7 @@ from decimal import Decimal
 
 from proteus import Model
 from trytond.model.exceptions import AccessError
+from trytond.model.modelview import AccessButtonError
 from trytond.modules.company.tests.tools import create_company, get_company
 from trytond.tests.test_tryton import drop_db
 from trytond.tests.tools import activate_modules
@@ -58,7 +59,9 @@ class TestReceivedDraft(unittest.TestCase):
         self.assertEqual(Product(product.id).cost_price, Decimal('4'))
         incoming, = shipment.incoming_moves
         inventory_ids = [m.id for m in shipment.inventory_moves]
-        shipment.click('cancel')
+        with self.assertRaises(AccessButtonError):
+            shipment.click('cancel')
+        shipment.reload()
         self.assertEqual(shipment.state, 'received')
         shipment.click('draft')
         self.assertEqual(shipment.state, 'draft')
@@ -100,5 +103,7 @@ class TestReceivedDraft(unittest.TestCase):
         shipment.effective_date = today
         shipment.click('receive')
         shipment.click('do')
-        shipment.click('draft')
+        with self.assertRaises(AccessButtonError):
+            shipment.click('draft')
+        shipment.reload()
         self.assertEqual(shipment.state, 'done')
